@@ -1,19 +1,26 @@
-import html from '../core.js'
-import { connect } from '../store.js'
-import TodoItem from './TodoItem.js'
+import html from "../core.js";
+import { connect } from "../store.js";
+import TodoItem from "./TodoItem.js";
 
-const connector = connect()
+const connector = connect();
 
-function Todolist({ todos }) {
-    console.log(todos)
-    return html`
+function Todolist({ todos, filter, filters }) {
+  return html`
     <section class="main">
-        <input id="toggle-all" class="toggle-all" type="checkbox">
-        <label for="toggle-all">Mark all as complete</label>
-        <ul class="todo-list">
-            ${todos.map((todo, index) => TodoItem({ todo, index }))}
-        </ul>
+      <input 
+          id="toggle-all" 
+          class="toggle-all" 
+          type="checkbox" 
+          onchange="dispatch('toggleAll',this.checked)"
+          ${todos.every(filters.completed) && 'checked'}
+      />
+      <label for="toggle-all">Mark all as complete</label>
+      <ul class="todo-list">
+        ${todos
+            .filter(filters[filter])
+            .map((todo, index) => TodoItem({ todo, index }))}
+      </ul>
     </section>
-    `
+  `;
 }
-export default connector(Todolist)
+export default connector(Todolist);
